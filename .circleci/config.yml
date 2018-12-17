@@ -1,0 +1,16 @@
+version: 2
+jobs:
+  build:
+    docker:
+      ... Global image definitions for all services ...
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - run: echo "export STAGE=$(if [ $(git rev-parse --abbrev-ref HEAD) = 'master' ]; then echo prod; elif [ $(git rev-parse --abbrev-ref HEAD) = 'staging' ]; then echo staging; else echo dev; fi); sudo npm install -g serverless jest" >> $BASH_ENV
+      - run: for dir in $(git log --name-only --oneline -1 | sed 1d | grep '/' | cut -d "/" -f1 | sed '/^\.circleci$/d' | sort -u); do cd $dir; npm run build; npm test; npm run deploy; cd ..; done
