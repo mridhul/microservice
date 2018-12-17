@@ -12,5 +12,4 @@ jobs:
           keys:
           - v1-dependencies-{{ checksum "build.sh" }}
           - v1-dependencies-
-#      - run: echo "export STAGE=$(if [ $(git rev-parse --abbrev-ref HEAD) = 'master' ]; then echo prod; elif [ $(git rev-parse --abbrev-ref HEAD) = 'staging' ]; then echo staging; else echo dev; fi); touch hello.txt" >> $BASH_ENV
-#      - run: for dir in $(git log --name-only --oneline -1 | sed 1d | grep '/' | cut -d "/" -f1 | sed '/^\.circleci$/d' | sort -u); do cd $dir; bash -x build.sh; cd ..; done
+      - run: for dir in $(git log --name-only --oneline -1 | sed 1d | grep '/' | cut -d "/" -f1 | sed '/^\.circleci$/d' | sort -u); do cd $dir; bash -x build.sh; cd ..; done
